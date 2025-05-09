@@ -18,6 +18,9 @@ defmodule InvestorUploaderWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    live "/investors", InvestorLive.Index, :index
+    live "/investors/new", InvestorLive.New, :new
+    live "/investors/:id", InvestorLive.Show, :show
   end
 
   # Other scopes may use custom stacks.
