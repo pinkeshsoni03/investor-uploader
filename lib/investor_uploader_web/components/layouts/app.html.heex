@@ -1,0 +1,26 @@
+<header class="px-4 sm:px-6 lg:px-8">
+  <div class="flex items-center justify-between border-b border-zinc-100 py-3 text-sm">
+    <div class="flex items-center gap-4">
+      <a href="/">
+        <img src={~p"/images/icapital-logo-2024-color.svg"} width="100px" />
+      </a>
+      <a href="/">
+        <h1 class="text-2xl font-bold text-zinc-900">Manage Investors</h1>
+      </a>
+    </div>
+    <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900">
+      <button
+        class="rounded-md bg-zinc-900 px-3 py-1.5 text-sm text-white shadow-sm ring-1 ring-zinc-900/10 hover:ring-zinc-900/20"
+        type="button"
+      >
+        Log out
+      </button>
+    </div>
+  </div>
+</header>
+<main class="px-4 py-20 sm:px-6 lg:px-8">
+  <div class="mx-auto max-w-2xl">
+    <.flash_group flash={@flash} />
+    {@inner_content}
+  </div>
+</main>
