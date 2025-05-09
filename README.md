@@ -10,7 +10,7 @@ A Phoenix LiveView application enabling partner platforms to ingest investor KYC
 
 | # | Path             | Description                                                                                                                                                                                                                |
 | - | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1 | `/investors/new` | **Add Investor** – Live form with real‑time validation. Required fields: first/last name, email (unique), DOB, phone (10 digits), street address, state (dropdown), ZIP (5 digits). File input for 1 × PDF/JPG/PNG ≤ 3 MB. |
+| 1 | `/investors/new` | **Add Investor** – Live form with real‑time validation. Required fields: first/last name, email (unique), DOB, phone (10 digits), street address, state (dropdown), ZIP (5 digits).  |
 | 2 | `/investors`     | **Investor List** – Paginated list of all investors with an **“Add Investor”** button and **“View”** link for each row.                                                                                                    |
 | 3 | `/investors/:id` | **Investor Detail** – Shows all captured fields, existing documents, and a LiveView uploader to attach additional docs (same size/type rules).                                                                             |
 
@@ -31,7 +31,7 @@ A Phoenix LiveView application enabling partner platforms to ingest investor KYC
 
   * Types: `.pdf .png .jpg .jpeg`
   * Size: ≤ 3 MB
-  * Progress bar + cancel link during upload.
+  * Progress + cancel link during upload.
 
 ---
 
@@ -78,7 +78,7 @@ mix test  # unit & LiveView integration
 * Detail view + additional document uploads (page 3).
 * All investor/document CRUD fenced inside a dedicated **Partners** context.
 * Comprehensive ExUnit suite covering validation edge‑cases, unique constraints, assoc constraints, and LiveView behaviour.
-* Six logical commits showing incremental development.
+* Logical commits showing incremental development.
 
 ---
 
