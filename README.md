@@ -54,7 +54,6 @@ cd investor-uploader
 
 # Install deps & assets
 mix deps.get
-cd assets && npm install && cd ..
 
 # DB
 mix ecto.setup   # creates DB + runs migrations
