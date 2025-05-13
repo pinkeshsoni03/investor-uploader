@@ -5,13 +5,33 @@ defmodule InvestorUploaderWeb.InvestorLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    investors = Partners.list_investors()
+    socket = list_investors(socket, %{page: 1, page_size: 5})
+
+    {:ok, socket}
+  end
+
+  @impl true
+  def handle_params(params, _, socket) do
+    params = %{
+      page: params["page"] || 1,
+      page_size: params["page_size"] || 5
+    }
+
+    socket =  list_investors(socket, params)
+
+    {:noreply, socket}
+  end
+
+  defp list_investors(socket, params) do
+    investors = Partners.list_investors(params)
 
     socket =
       socket
-      |> assign(:investors, investors)
-
-    {:ok, socket}
+      |> assign(:investors, investors.entries)
+      |> assign(:page_number, investors.page_number)
+      |> assign(:page_size, investors.page_size)
+      |> assign(:total_entries, investors.total_entries)
+      |> assign(:total_pages, investors.total_pages)
   end
 
   @impl true
@@ -59,6 +79,38 @@ defmodule InvestorUploaderWeb.InvestorLive.Index do
           <% end %>
         </tbody>
       </table>
+      <div style="display: flex; flex-direction: row; padding: 2px;">
+        <div class="px-4 py-2">
+          <%= if @page_number > 1 do %>
+            <.link
+              patch={~p"/investors?page=#{@page_number - 1}"}
+              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Previous
+            </.link>
+          <% end %>
+        </div>
+        <%= for page <- 1..@total_pages do %>
+          <div class="px-4 py-2">
+            <.link
+              patch={~p"/investors?page=#{page}"}
+              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              <%= page %>
+            </.link>
+          </div>
+        <% end %>
+        <div class="px-4 py-2">
+          <%= if @page_number < @total_pages do %>
+            <.link
+              patch={~p"/investors?page=#{@page_number + 1}"}
+              class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Next
+            </.link>
+          <% end %>
+        </div>
+      </div>
     </div>
     """
   end

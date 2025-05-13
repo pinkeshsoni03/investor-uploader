@@ -7,7 +7,11 @@ defmodule InvestorUploader.Partners do
 
   ## Investors
 
-  def list_investors, do: Repo.all(Investor)
+  def list_investors(params) do
+    Investor
+    |> order_by([i], desc: i.inserted_at)
+    |> Repo.paginate(params)
+  end
 
   def get_investor!(id) do
     Repo.get!(Investor, id)

@@ -93,6 +93,48 @@ mix test  # unit & LiveView integration
 
 ---
 
+
+### ✨ Enhancement — Server‑Side Pagination (v1.1)
+
+The investor listing page (`/investors`) now scales gracefully thanks to **server‑side pagination** powered by \[`scrivener_ecto` \~> 2.7].
+
+| UI                          | Behaviour                                                                     |
+| --------------------------- | ----------------------------------------------------------------------------- |
+| **« Prev / Next » buttons** | Navigate to the previous or next page. Disabled when at the beginning or end. |
+| **Page‑number links**       | Jump directly to a specific page (first, current ±2, last).                   |
+| **LiveView patches**        | Pagination is **instant**—only the table is re‑rendered, no full‑page load.   |
+
+#### How it works
+
+1. **Dependency**   `{:scrivener_ecto, "~> 2.7"}` added in `mix.exs`.
+2. **Repo config**   `use Scrivener, page_size: 5` in `InvestorUploader.Repo`.
+3. **Context**   `Partners.list_investors/1` now returns a `%Scrivener.Page{}` given a params map (`%{"page" => "2"}` etc.).
+4. **LiveView**
+
+   * Reads `page` from the URL params in `handle_params/3`.
+   * Assigns `@page` (`%Scrivener.Page{}`) and renders only `@page.entries`.
+   * Renders `<.pagination page={@page} />` component that outputs « Prev / Next » and numbered links.
+5. **Routing**   URLs look like `/investors?page=3`; LiveView keeps patching rather than redirecting.
+
+```elixir
+# lib/investor_uploader/partners.ex
+def list_investors(params \\ %{}) do
+  Investor
+  |> order_by([i], desc: i.inserted_at)
+  |> Repo.paginate(params)
+end
+```
+
+#### Configuration
+
+| ENV         | Default | Description                                               |
+| ----------- | ------- | --------------------------------------------------------- |
+| `PAGE_SIZE` | `5`    | Investors per page (overrides `Repo.paginate/2` default). |
+
+> **Tip:** Change `page_size` on a per‑request basis via query param: `/investors?page_size=25`.
+
+This enhancement keeps the UI snappy even with thousands of investor records and sets the stage for future filters and search.
+
 ## Author
 
 **Pinkesh Soni**
