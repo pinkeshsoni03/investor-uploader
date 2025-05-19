@@ -28,6 +28,7 @@ defmodule InvestorUploader.PartnersTest do
 
     test "get_investor!/1 returns the investor with documents preloaded" do
       {:ok, investor} = Partners.create_investor(@valid_investor_attrs)
+
       {:ok, doc} =
         Partners.create_document(%{
           investor_id: investor.id,

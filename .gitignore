@@ -35,3 +35,5 @@ investor_uploader-*.tar
 npm-debug.log
 /assets/node_modules/
 
+.tool-versions
+# Ignore the generated .formatter.exs file.

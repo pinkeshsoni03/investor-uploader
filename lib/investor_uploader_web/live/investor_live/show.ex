@@ -3,19 +3,19 @@ defmodule InvestorUploaderWeb.InvestorLive.Show do
 
   alias InvestorUploader.Partners
 
-
   @impl true
   def mount(%{"id" => id}, _session, socket) do
     investor = Partners.get_investor!(id)
+
     socket =
       socket
       |> assign(:investor, investor)
       |> assign(:uploaded_files, [])
       |> allow_upload(:doc,
-           accept: ~w(.pdf .png .jpg .jpeg),
-           max_entries: 3,
-           max_file_size: 3_000_000
-         )
+        accept: ~w(.pdf .png .jpg .jpeg),
+        max_entries: 3,
+        max_file_size: 3_000_000
+      )
 
     {:ok, socket}
   end
@@ -27,36 +27,42 @@ defmodule InvestorUploaderWeb.InvestorLive.Show do
       <h1 class="text-2xl font-bold mb-4">Investor Details</h1>
 
       <div class="space-y-2">
-        <p><strong>First Name:</strong> <%= @investor.first_name %></p>
-        <p><strong>Last Name:</strong>  <%= @investor.last_name  %></p>
-        <p><strong>Email:</strong>      <%= @investor.email      %></p>
-        <p><strong>DOB:</strong>        <%= @investor.dob        %></p>
-        <p><strong>Phone:</strong>      <%= @investor.phone      %></p>
-        <p><strong>Address:</strong>    <%= @investor.street_address %>, <%= @investor.state %> <%= @investor.zip_code %></p>
+        <p><strong>First Name:</strong> {@investor.first_name}</p>
+        <p><strong>Last Name:</strong> {@investor.last_name}</p>
+        <p><strong>Email:</strong> {@investor.email}</p>
+        <p><strong>DOB:</strong> {@investor.dob}</p>
+        <p><strong>Phone:</strong> {@investor.phone}</p>
+        <p>
+          <strong>Address:</strong> {@investor.street_address}, {@investor.state} {@investor.zip_code}
+        </p>
       </div>
 
       <h2 class="mt-6 text-xl font-semibold">Documents</h2>
       <form id="upload-form" phx-submit="save" phx-change="validate">
-        <.live_file_input upload={@uploads.doc}/>
+        <.live_file_input upload={@uploads.doc} />
         <%= for entry <- @uploads.doc.entries do %>
           <div class="row">
             <div class="column">
-              <%= entry.client_name %>
+              {entry.client_name}
               <%= if entry.valid? do %>
                 <span class="text-green-600"> File Valid</span>
               <% else %>
-                <span class="text-red-600">Error: Should be (.pdf .png .jpg .jpeg) and less then 3MB File</span>
+                <span class="text-red-600">
+                  Error: Should be (.pdf .png .jpg .jpeg) and less then 3MB File
+                </span>
               <% end %>
-              <a href="#" phx-click="cancel-upload" phx-value-ref={entry.ref} class="text-red-600 hover:underline">
+              <a
+                href="#"
+                phx-click="cancel-upload"
+                phx-value-ref={entry.ref}
+                class="text-red-600 hover:underline"
+              >
                 Cancel
               </a>
             </div>
           </div>
         <% end %>
-        <button
-          type="submit"
-          class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
+        <button type="submit" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700">
           Upload
         </button>
       </form>
@@ -64,7 +70,7 @@ defmodule InvestorUploaderWeb.InvestorLive.Show do
         <%= for doc <- @investor.documents do %>
           <li>
             <p class="text-blue-600">
-              <%= doc.filename %>
+              {doc.filename}
             </p>
           </li>
         <% end %>
@@ -92,16 +98,27 @@ defmodule InvestorUploaderWeb.InvestorLive.Show do
 
   def handle_event("save", _params, socket) do
     consume_uploaded_entries(socket, :doc, fn %{path: path}, %{client_name: name} ->
-        dest = Path.join(Application.app_dir(:investor_uploader, "priv/static/uploads"), socket.assigns.investor.id <> "-" <> name)
-        File.cp!(path, dest)
-        Partners.create_document(%{filename: name, path: dest, investor_id: socket.assigns.investor.id})
-      end)
+      dest =
+        Path.join(
+          Application.app_dir(:investor_uploader, "priv/static/uploads"),
+          socket.assigns.investor.id <> "-" <> name
+        )
+
+      File.cp!(path, dest)
+
+      Partners.create_document(%{
+        filename: name,
+        path: dest,
+        investor_id: socket.assigns.investor.id
+      })
+    end)
 
     socket =
       socket
       |> update(:investor, fn inv ->
         Partners.get_investor!(inv.id)
       end)
+
     {:noreply, socket}
   end
 end
