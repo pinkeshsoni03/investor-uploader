@@ -17,7 +17,7 @@ defmodule InvestorUploaderWeb.InvestorLive.Index do
       page_size: params["page_size"] || 5
     }
 
-    socket =  list_investors(socket, params)
+    socket = list_investors(socket, params)
 
     {:noreply, socket}
   end
@@ -25,13 +25,12 @@ defmodule InvestorUploaderWeb.InvestorLive.Index do
   defp list_investors(socket, params) do
     investors = Partners.list_investors(params)
 
-    socket =
-      socket
-      |> assign(:investors, investors.entries)
-      |> assign(:page_number, investors.page_number)
-      |> assign(:page_size, investors.page_size)
-      |> assign(:total_entries, investors.total_entries)
-      |> assign(:total_pages, investors.total_pages)
+    socket
+    |> assign(:investors, investors.entries)
+    |> assign(:page_number, investors.page_number)
+    |> assign(:page_size, investors.page_size)
+    |> assign(:total_entries, investors.total_entries)
+    |> assign(:total_pages, investors.total_pages)
   end
 
   @impl true
@@ -96,7 +95,7 @@ defmodule InvestorUploaderWeb.InvestorLive.Index do
               patch={~p"/investors?page=#{page}"}
               class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
-              <%= page %>
+              {page}
             </.link>
           </div>
         <% end %>

@@ -35,3 +35,4 @@ investor_uploader-*.tar
 npm-debug.log
 /assets/node_modules/
 
+.tool-versions
