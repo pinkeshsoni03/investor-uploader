@@ -17,15 +17,6 @@ defmodule InvestorUploaderWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", InvestorUploaderWeb do
-    pipe_through :browser
-
-    get "/", PageController, :home
-    live "/investors", InvestorLive.Index, :index
-    live "/investors/new", InvestorLive.New, :new
-    live "/investors/:id", InvestorLive.Show, :show
-  end
-
   # Other scopes may use custom stacks.
   # scope "/api", InvestorUploaderWeb do
   #   pipe_through :api
@@ -69,6 +60,9 @@ defmodule InvestorUploaderWeb.Router do
 
     live_session :require_authenticated_user,
       on_mount: [{InvestorUploaderWeb.UserAuth, :ensure_authenticated}] do
+      live "/investors", InvestorLive.Index, :index
+      live "/investors/new", InvestorLive.New, :new
+      live "/investors/:id", InvestorLive.Show, :show
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
     end
