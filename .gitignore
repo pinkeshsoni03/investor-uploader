@@ -36,4 +36,4 @@ npm-debug.log
 /assets/node_modules/
 
 .tool-versions
-# Ignore the generated .formatter.exs file.
+# Ignore the generated .formatter.exs file..tool-versions
