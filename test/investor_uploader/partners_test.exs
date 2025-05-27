@@ -23,7 +23,8 @@ defmodule InvestorUploader.PartnersTest do
   describe "investors" do
     test "list_investors/0 returns all investors" do
       {:ok, investor} = Partners.create_investor(@valid_investor_attrs)
-      assert [^investor] = Partners.list_investors()
+      investors = Partners.list_investors(%{page: 1, page_size: 5})
+      assert [^investor] = investors.entries
     end
 
     test "get_investor!/1 returns the investor with documents preloaded" do
