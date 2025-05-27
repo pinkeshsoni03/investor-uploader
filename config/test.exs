@@ -7,7 +7,7 @@ import Config
 # Run `mix help test` for more information.
 config :investor_uploader, InvestorUploader.Repo,
   username: "postgres",
-  password: "nehapikukamac",
+  password: "postgres",
   hostname: "localhost",
   database: "investor_uploader_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,
