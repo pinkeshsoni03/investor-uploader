@@ -63,6 +63,10 @@ defmodule InvestorUploaderWeb.InvestorLive.Index do
                 <.link patch={~p"/investors/#{inv.id}"} class="text-blue-600 hover:underline">
                   View
                 </.link>
+
+                <.link patch={~p"/investors/#{inv.id}/edit"} class="text-blue-600 hover:underline">
+                  Edit
+                </.link>
               </td>
             </tr>
           <% end %>

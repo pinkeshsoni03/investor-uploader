@@ -1,22 +1,19 @@
-defmodule InvestorUploaderWeb.InvestorLive.New do
+defmodule InvestorUploaderWeb.InvestorLive.Edit do
   use InvestorUploaderWeb, :live_view
 
   alias InvestorUploader.Partners
   alias InvestorUploader.Partners.Investor
 
   @impl true
-  def mount(_params, _session, socket) do
-    changeset = Partners.change_investor(%Investor{})
+  def mount(%{"id" => id}, _session, socket) do
+    investor = Partners.get_investor!(id)
+    changeset = Partners.change_investor(investor)
 
     socket =
       socket
+      |> assign(:investor, investor)
       |> assign(:form, to_form(changeset))
       |> assign(:states, Investor.states())
-      |> allow_upload(:file,
-        accept: ~w(.pdf .png .jpg .jpeg),
-        max_entries: 1,
-        max_file_size: 3_000_000
-      )
 
     {:ok, socket}
   end
@@ -25,9 +22,9 @@ defmodule InvestorUploaderWeb.InvestorLive.New do
   def render(assigns) do
     ~H"""
     <div class="max-w-lg mx-auto p-4">
-      <h1 class="text-2xl font-bold mb-4">New Investor</h1>
+      <h1 class="text-2xl font-bold mb-4">Edit Investor</h1>
 
-      <.form for={@form} phx-change="validate" phx-submit="save" multipart>
+      <.form for={@form} phx-change="validate" phx-submit="save">
         <.input field={@form[:first_name]} type="text" label="First Name" />
         <.input field={@form[:last_name]} type="text" label="Last Name" />
         <.input field={@form[:email]} type="email" label="Email" />
@@ -42,9 +39,18 @@ defmodule InvestorUploaderWeb.InvestorLive.New do
           prompt="Select a state"
         />
         <.input field={@form[:zip_code]} type="text" label="ZIP Code" />
-        <button type="submit" class="mt-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-          Submit
-        </button>
+
+        <div class="mt-6 flex space-x-2">
+          <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+            Save Changes
+          </button>
+          <.link
+            patch={~p"/investors/#{@investor.id}"}
+            class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+          >
+            Cancel
+          </.link>
+        </div>
       </.form>
     </div>
     """
@@ -62,19 +68,12 @@ defmodule InvestorUploaderWeb.InvestorLive.New do
 
   @impl true
   def handle_event("save", %{"investor" => params}, socket) do
-    # Save uploaded file to "uploads/" and get its path
-    case Partners.create_investor(params) do
-      {:ok, _inv} ->
-        {:noreply, socket |> redirect(to: "/investors")}
-
-      {:error,
-       %Ecto.Changeset{errors: [email: {_, [constraint: unique, constraint_name: _]}]} = cs} ->
-        investor = Partners.get_investor_by_email(params["email"])
-
+    case Partners.update_investor(socket.assigns.investor, params) do
+      {:ok, investor} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Investor already exists.")
-         |> redirect(to: "/investors/#{investor.id}/edit")}
+         |> put_flash(:info, "Investor updated successfully.")
+         |> redirect(to: "/investors/#{investor.id}")}
 
       {:error, %Ecto.Changeset{} = cs} ->
         {:noreply, assign(socket, form: to_form(cs))}
