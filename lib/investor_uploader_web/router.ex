@@ -63,6 +63,7 @@ defmodule InvestorUploaderWeb.Router do
       live "/investors", InvestorLive.Index, :index
       live "/investors/new", InvestorLive.New, :new
       live "/investors/:id", InvestorLive.Show, :show
+      live "/investors/:id/edit", InvestorLive.Edit, :edit
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
     end

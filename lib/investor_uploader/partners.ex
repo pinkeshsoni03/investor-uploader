@@ -18,10 +18,20 @@ defmodule InvestorUploader.Partners do
     |> Repo.preload(:documents)
   end
 
+  def get_investor_by_email(email) do
+    Repo.get_by(Investor, email: email)
+  end
+
   def create_investor(attrs \\ %{}) do
     %Investor{}
     |> Investor.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def update_investor(%Investor{} = investor, attrs) do
+    investor
+    |> Investor.changeset(attrs)
+    |> Repo.update()
   end
 
   def change_investor(%Investor{} = investor, attrs \\ %{}) do
